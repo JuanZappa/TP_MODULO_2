@@ -13,9 +13,10 @@ const ProductoDetalle = () => {
   const [stockDisponible, setStockDisponible] = useState({});
 
   useEffect(() => {
-    fetch("/productos.json")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch("/productos.json");
+        const data = await response.json();
         setProductos(data);
         const stockInicial = {};
         const cantidadInicial = {};
@@ -25,7 +26,11 @@ const ProductoDetalle = () => {
         });
         setStockDisponible(stockInicial);
         setCantidadSeleccionada(cantidadInicial);
-      });
+      } catch (error) {
+        console.error("Error cargando los productos:", error);
+      }
+    };
+    fetchProductos();
   }, []);
 
   const handleCompra = (id) => {
