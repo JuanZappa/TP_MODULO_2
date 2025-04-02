@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductoImagen from "./ProductoImagen";
 import ProductoPrecio from "./ProductoPrecio";
 import ProductoStock from "./ProductoStock";
@@ -7,32 +7,55 @@ import CantidadSelector from "./CantidadSelector";
 import "./../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
+  const [productos, setProductos] = useState([]);
   const [mensaje, setMensaje] = useState("");
-  const [cantidadDisponible, setCantidadDisponible] = useState(5);
-  const [cantidadSeleccionada, setCantidadSeleccionada] = useState(1);
+  const [cantidadSeleccionada, setCantidadSeleccionada] = useState({});
+  const [stockDisponible, setStockDisponible] = useState({});
 
-  const producto = {
-    nombre: "Laptop Gamer",
-    imagen: "./laptop.jpg",
-    precioReal: 1500,
-    precioFinal: 1200,
-  };
+  useEffect(() => {
+    fetch("/productos.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setProductos(data);
+        const stockInicial = {};
+        const cantidadInicial = {};
+        data.forEach((producto) => {
+          stockInicial[producto.id] = producto.cantidadDisponible;
+          cantidadInicial[producto.id] = 1;
+        });
+        setStockDisponible(stockInicial);
+        setCantidadSeleccionada(cantidadInicial);
+      });
+  }, []);
 
-  const handleCompra = () => {
-    if (cantidadDisponible >= cantidadSeleccionada) {
-      setCantidadDisponible(cantidadDisponible - cantidadSeleccionada);
+  const handleCompra = (id) => {
+    if (stockDisponible[id] >= cantidadSeleccionada[id]) {
+      setStockDisponible((prevStock) => ({
+        ...prevStock,
+        [id]: prevStock[id] - cantidadSeleccionada[id],
+      }));
       setMensaje("¡Gracias por su compra!");
     }
   };
 
   return (
-    <div className="producto-detalle">
-      <h2 className="producto-nombre">{producto.nombre}</h2>
-      <ProductoImagen src={producto.imagen} alt={producto.nombre} />
-      <ProductoPrecio precioReal={producto.precioReal} precioFinal={producto.precioFinal} />
-      <ProductoStock cantidadDisponible={cantidadDisponible} />
-      <CantidadSelector cantidad={cantidadSeleccionada} setCantidad={setCantidadSeleccionada} max={cantidadDisponible} />
-      <BotonCompra onClick={handleCompra} disabled={cantidadDisponible === 0} />
+    <div className="productos-lista">
+      {productos.map((producto) => (
+        <div key={producto.id} className="producto-detalle">
+          <h2 className="producto-nombre">{producto.nombre}</h2>
+          <ProductoImagen src={producto.imagen} alt={producto.nombre} />
+          <ProductoPrecio precioReal={producto.precioReal} precioFinal={producto.precioFinal} />
+          <ProductoStock cantidadDisponible={stockDisponible[producto.id]} />
+          <CantidadSelector
+            cantidad={cantidadSeleccionada[producto.id]}
+            setCantidad={(cantidad) =>
+              setCantidadSeleccionada((prev) => ({ ...prev, [producto.id]: cantidad }))
+            }
+            max={stockDisponible[producto.id]}
+          />
+          <BotonCompra onClick={() => handleCompra(producto.id)} disabled={stockDisponible[producto.id] === 0} />
+        </div>
+      ))}
       {mensaje && <p className="mensaje-compra">{mensaje}</p>}
     </div>
   );

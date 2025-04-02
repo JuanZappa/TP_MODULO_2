@@ -1,0 +1,19 @@
+[
+    {
+      "id": 1,
+      "nombre": "Laptop Gamer",
+      "imagen": "/laptop.jpg",
+      "precioReal": 1500,
+      "precioFinal": 1200,
+      "cantidadDisponible": 5
+    },
+    {
+      "id": 2,
+      "nombre": "Mouse Inalámbrico",
+      "imagen": "/mouse.jpg",
+      "precioReal": 50,
+      "precioFinal": 40,
+      "cantidadDisponible": 10
+    }
+  ]
+  
