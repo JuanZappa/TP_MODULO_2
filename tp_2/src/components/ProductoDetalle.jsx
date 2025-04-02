@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ProductoImagen from "./ProductoImagen";
 import ProductoPrecio from "./ProductoPrecio";
 import ProductoStock from "./ProductoStock";
@@ -12,26 +12,23 @@ const ProductoDetalle = () => {
   const [cantidadSeleccionada, setCantidadSeleccionada] = useState({});
   const [stockDisponible, setStockDisponible] = useState({});
 
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        const response = await fetch("/productos.json");
-        const data = await response.json();
-        setProductos(data);
-        const stockInicial = {};
-        const cantidadInicial = {};
-        data.forEach((producto) => {
-          stockInicial[producto.id] = producto.cantidadDisponible;
-          cantidadInicial[producto.id] = 1;
-        });
-        setStockDisponible(stockInicial);
-        setCantidadSeleccionada(cantidadInicial);
-      } catch (error) {
-        console.error("Error cargando los productos:", error);
-      }
-    };
-    fetchProductos();
-  }, []);
+  const cargarProductos = async () => {
+    try {
+      const response = await fetch("/productos.json");
+      const data = await response.json();
+      setProductos(data);
+      const stockInicial = {};
+      const cantidadInicial = {};
+      data.forEach((producto) => {
+        stockInicial[producto.id] = producto.cantidadDisponible;
+        cantidadInicial[producto.id] = 1;
+      });
+      setStockDisponible(stockInicial);
+      setCantidadSeleccionada(cantidadInicial);
+    } catch (error) {
+      console.error("Error cargando los productos:", error);
+    }
+  };
 
   const handleCompra = (id) => {
     if (stockDisponible[id] >= cantidadSeleccionada[id]) {
@@ -45,6 +42,7 @@ const ProductoDetalle = () => {
 
   return (
     <div className="productos-lista">
+      <button onClick={cargarProductos} className="cargar-productos">Cargar Productos</button>
       {productos.map((producto) => (
         <div key={producto.id} className="producto-detalle">
           <h2 className="producto-nombre">{producto.nombre}</h2>
