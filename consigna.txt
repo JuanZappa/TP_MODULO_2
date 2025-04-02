@@ -1,0 +1,10 @@
+Desarrollar el registro de una pagina web, en registro tener los siguientes campos:
+Nombre
+Apellido
+Email
+Teléfono
+Password
+Confirmar Password
+Realizar solo el maquetado utilizando react js y JSX, no se deben guardar los usuario no realizar lógica de validación de los mismos.
+Fecha de entrega:
+Link al repositorio o a la aplicación delsplegada en servidor
