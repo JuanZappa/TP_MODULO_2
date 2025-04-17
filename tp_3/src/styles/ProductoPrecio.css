@@ -1,0 +1,16 @@
+.producto-precio {
+    text-align: center;
+  }
+  .precio-real {
+    text-decoration: line-through;
+    color: #888;
+  }
+  .precio-final {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  .porcentaje-oferta {
+    color: #ff5722;
+  }
+  
